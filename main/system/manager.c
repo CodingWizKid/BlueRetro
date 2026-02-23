@@ -31,26 +31,26 @@
 
 #define BOOT_BTN_PIN 0
 
-#define RESET_PIN 14
+#define RESET_PIN 32            // Jared - Changed from 14 to 32
 
-#define POWER_ON_PIN 13
-#define POWER_OFF_PIN 16
-#define POWER_SENSE_PIN 39
+#define POWER_ON_PIN 26         // Jared - Changed from 13 to 26 (unused)
+#define POWER_OFF_PIN 25        // Jared - Changed from 16 to 25 (unused)
+#define POWER_OFF_ALT_PIN 27    // Jared - Changed from 12 to 27 (unused)
 
-#define POWER_OFF_ALT_PIN 12
+#define POWER_SENSE_PIN 36      // Jared - Changed from 39 to 36
 
-#define SENSE_P1_PIN 35
-#define SENSE_P2_PIN 36
-#define SENSE_P3_PIN 32
-#define SENSE_P4_PIN 33
+#define SENSE_P1_PIN 8          // Jared - Changed from 35 to 8
+#define SENSE_P2_PIN 7          // Jared - Changed from 36 to 7
+#define SENSE_P3_PIN 21         // Jared - Changed from 32 to 21
+#define SENSE_P4_PIN 5          // Jared - Changed from 33 to 5
 
-#define SENSE_P1_ALT_PIN 15
-#define SENSE_P2_ALT_PIN 34
+#define SENSE_P1_ALT_PIN 8      // Jared - Changed from 15 to 8
+#define SENSE_P2_ALT_PIN 7      // Jared - Changed from 34 to 7
 
-#define LED_P1_PIN 2
-#define LED_P2_PIN 4
-#define LED_P3_PIN 12
-#define LED_P4_PIN 15
+#define LED_P1_PIN 4            // Jared - Changed from 2 to 4
+#define LED_P2_PIN 12           // Jared - Changed from 4 to 12
+#define LED_P3_PIN 2            // Jared - Changed from 12 to 2
+#define LED_P4_PIN 13           // Jared - Changed from 15 to 13
 
 #define INHIBIT_CNT 200
 
@@ -368,6 +368,7 @@ static void boot_btn_hdl(void) {
         if (check_qdp && sys_mgr_get_power() && sys_mgr_get_boot_btn()) {
             sys_mgr_power_off();
             check_qdp = 0;
+            printf("Quick double press triggered\n");
         }
         return;
     }
@@ -397,26 +398,26 @@ static void boot_btn_hdl(void) {
             state++;
         }
 
+        // Jared - Changed the cases when holding down BOOT0 
         if (sys_mgr_get_power()) {
             /* System is on */
             switch (state) {
                 case SYS_MGR_BTN_STATE0:
-                    sys_mgr_reset();
-                    check_qdp = 1;
-                    break;
-                case SYS_MGR_BTN_STATE1:
                     if (bt_hci_get_inquiry()) {
                         bt_hci_stop_inquiry();
                     }
                     else {
-                        bt_host_disconnect_all();
+                        bt_hci_start_inquiry();
                     }
+                    check_qdp = 1;
+                    break;
+                case SYS_MGR_BTN_STATE1:
+                    bt_host_disconnect_all();
                     break;
                 case SYS_MGR_BTN_STATE2:
-                    bt_hci_start_inquiry();
+                    sys_mgr_reset();
                     break;
                 default:
-                    sys_mgr_factory_reset();
                     break;
             }
         }

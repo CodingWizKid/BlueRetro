@@ -17,7 +17,7 @@
 #else
 #define ERR_LED_PIN 17
 #endif
-#define PICO_ERR_LED_PIN 20
+#define PICO_ERR_LED_PIN 15  // Jared - Changed from 20 to 15
 
 /* LED flags */
 enum {

@@ -591,6 +591,11 @@ int32_t bt_host_init(void) {
         return -1;
     }
 
+    // Jared - Increase BT Power to max
+    ret &= esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
+    ret &= esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
+    ret &= esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
+
     return ret;
 }
 

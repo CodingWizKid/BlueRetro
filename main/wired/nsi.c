@@ -54,7 +54,7 @@ typedef struct {
 extern rmt_mem_t RMTMEM;
 
 static const uint8_t gpio_pin[4] = {
-    19, 5, 26, 27
+    20, 14, 22, 19 // Jared - Changed from {19, 5, 26, 27} to {20, 14, 22, 19}
 };
 
 static const uint8_t rmt_ch[4][2] = {
@@ -632,6 +632,8 @@ static unsigned gc_isr(unsigned cause) {
     uint16_t item;
     uint8_t i, channel, port;
 
+    ets_printf("# gc_isr\n");
+
     while (status) {
         i = __builtin_ffs(status) - 1;
         status &= ~(1 << i);
@@ -677,6 +679,8 @@ static unsigned gc_isr(unsigned cause) {
 }
 
 void nsi_init(uint32_t package) {
+    ets_printf("# nsi_init\n");
+    
     uint32_t system = (wired_adapter.system_id == N64) ? 0 : 1;
 
     periph_ll_enable_clk_clear_rst(PERIPH_RMT_MODULE);

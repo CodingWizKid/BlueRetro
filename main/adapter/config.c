@@ -34,7 +34,7 @@ struct hw_config hw_config = {
     .led_pulse_off_duty_cycle = 0,
     .led_pulse_on_duty_cycle = 0x1FFF,
     .port_cnt = 2,
-    .ports_sense_input_polarity = 0,
+    .ports_sense_input_polarity = 1, // Jared - Swap sense pin polarity
     .ports_sense_output_ms = 1000,
     .ports_sense_output_od = 0,
     .ports_sense_output_polarity = 0,
@@ -47,14 +47,14 @@ struct hw_config hw_config = {
     .reset_pin_polarity = 0,
     .reset_pin_pulse_ms = 500,
     .sw_io0_hold_thres_ms = {1000, 3000, 6000},
-    .ps_ctrl_colors = {
+    .ps_ctrl_colors = { // Jared - Change LED color on Playstation controllers
+        0xFFFFFF, /* White */
         0xFF0000, /* Blue */
-        0x0000FF, /* Red */
         0x00FF00, /* Green */
+        0x0080FF, /* Orange */
+        0x0000FF, /* Red */
         0xFF00FF, /* Pink */
         0xFFFF00, /* Cyan */
-        0x0080FF, /* Orange */
-        0x00FFFF, /* Yellow */
         0xFF0080, /* Purple */
     },
 };

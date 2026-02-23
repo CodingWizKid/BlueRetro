@@ -60,6 +60,7 @@ static void wired_init_task(void) {
         ets_printf("# Config override system : %d: %s\n", wired_adapter.system_id, wired_get_sys_name());
     }
 
+    ets_printf("# adapter_init_buffer\n");
     for (uint32_t i = 0; i < WIRED_MAX_DEV; i++) {
         adapter_init_buffer(i);
     }
