@@ -632,8 +632,6 @@ static unsigned gc_isr(unsigned cause) {
     uint16_t item;
     uint8_t i, channel, port;
 
-    ets_printf("# gc_isr\n");
-
     while (status) {
         i = __builtin_ffs(status) - 1;
         status &= ~(1 << i);
@@ -642,7 +640,7 @@ static unsigned gc_isr(unsigned cause) {
         switch (i % 3) {
             /* TX End */
             case 0:
-                //ets_printf("TX_END\n");
+                ets_printf("TX_END Channel %d\n", channel);
                 RMT.conf_ch[channel].conf1.mem_rd_rst = 1;
                 RMT.conf_ch[channel].conf1.mem_rd_rst = 0;
                 /* Go RX right away */
@@ -651,7 +649,7 @@ static unsigned gc_isr(unsigned cause) {
                 break;
             /* RX End */
             case 1:
-                //ets_printf("RX_END\n");
+                ets_printf("RX_END Channel %d\n", channel);
                 RMT.conf_ch[channel].conf1.rx_en = 0;
                 RMT.conf_ch[channel].conf1.mem_owner = RMT_LL_MEM_OWNER_SW;
                 RMT.conf_ch[channel].conf1.mem_wr_rst = 1;
@@ -678,8 +676,9 @@ static unsigned gc_isr(unsigned cause) {
     return 0;
 }
 
+
+// Initializes Remote Control Transceiver (RMT) channels and initialize the callback for interrupts. 
 void nsi_init(uint32_t package) {
-    ets_printf("# nsi_init\n");
     
     uint32_t system = (wired_adapter.system_id == N64) ? 0 : 1;
 
@@ -721,6 +720,18 @@ void nsi_init(uint32_t package) {
     intexc_alloc_iram(ETS_RMT_INTR_SOURCE, 19, wired_adapter.system_id == N64 ? n64_isr : gc_isr);
 }
 
+// Jared Important Comment: 
+// https://docs.espressif.com/projects/esp-idf/en/v5.5.3/esp32/api-reference/peripherals/rmt.html
+// There are 4 channels RMT.conf_ch[rmt_ch[i]] each associated with a GPIO pin. I think the 
+// console is polling the GPIO/data line which triggers a RMT interrupt. The interrupt callsback gc_isr, 
+// which takes the wired_adapter.data, and converts it into valid data sent back over the wire to the console.
+// It makes sense that the GC and N64 both reside in this code, since Google says they use the same protocol.
+
+/*
+* "The GameCube controller protocol is a proprietary, 3.3V single-wire, bidirectional serial protocol derived from the Nintendo 64. 
+*  It operates at 200–250 kHz using open-drain signaling with a pull-up resistor. The console sends a 24-bit poll, and the controller 
+*  responds with 8 bytes of data (analog sticks, buttons, and triggers)." - https://jefflongo.dev/posts/gc-controller-reverse-engineering-part-1
+*/
 void nsi_port_cfg(uint16_t mask) {
     uint32_t system = (wired_adapter.system_id == N64) ? 0 : 1;
 

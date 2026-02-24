@@ -194,7 +194,8 @@ static void gc_ctrl_special_action(struct wired_ctrl *ctrl_data, struct wired_da
     }
 }
 
-// Jared - Seems to be related to continuous data from Bluetooth
+// Jared - Map generic wired output to specific wired gamecube controller.
+// wired_data == &wired_adapter.data[i] which gets sent over the GPIO inside nsi.c --> gc_isr().
 static void gc_ctrl_from_generic(struct wired_ctrl *ctrl_data, struct wired_data *wired_data) {
     struct gc_map map_tmp;
     uint32_t map_mask = 0xFFFF;
