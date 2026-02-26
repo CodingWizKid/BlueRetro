@@ -520,8 +520,6 @@ void adapter_toggle_fb(uint32_t wired_id, uint32_t duration_us, uint8_t lf_pwr, 
 }
 
 void adapter_init(void) {
-    printf("# adapter_init\n");
-    
     wired_adapter.system_id = WIRED_AUTO;
 
     /* Save regular DRAM by allocating big sruct w/ only 32bits access in IRAM */

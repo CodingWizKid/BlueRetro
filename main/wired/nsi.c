@@ -639,8 +639,8 @@ static unsigned gc_isr(unsigned cause) {
         port = channel / 2;
         switch (i % 3) {
             /* TX End */
-            case 0:
-                ets_printf("TX_END Channel %d\n", channel);
+            case 0: 
+                //ets_printf("TX_END Channel %d\n", channel); // Jared - Uncomment for debugging GPIO
                 RMT.conf_ch[channel].conf1.mem_rd_rst = 1;
                 RMT.conf_ch[channel].conf1.mem_rd_rst = 0;
                 /* Go RX right away */
@@ -649,7 +649,7 @@ static unsigned gc_isr(unsigned cause) {
                 break;
             /* RX End */
             case 1:
-                ets_printf("RX_END Channel %d\n", channel);
+                //ets_printf("RX_END Channel %d\n", channel); // Jared - Uncomment for debugging GPIO
                 RMT.conf_ch[channel].conf1.rx_en = 0;
                 RMT.conf_ch[channel].conf1.mem_owner = RMT_LL_MEM_OWNER_SW;
                 RMT.conf_ch[channel].conf1.mem_wr_rst = 1;
@@ -726,6 +726,7 @@ void nsi_init(uint32_t package) {
 // console is polling the GPIO/data line which triggers a RMT interrupt. The interrupt callsback gc_isr, 
 // which takes the wired_adapter.data, and converts it into valid data sent back over the wire to the console.
 // It makes sense that the GC and N64 both reside in this code, since Google says they use the same protocol.
+// Update: Tested on console proving my theory correct. Can also tap the GPIO pin with a 3.3V signal and see gc_isr trigger.
 
 /*
 * "The GameCube controller protocol is a proprietary, 3.3V single-wire, bidirectional serial protocol derived from the Nintendo 64. 
